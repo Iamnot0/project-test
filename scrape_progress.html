@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scraping in Progress...</title>
+    <meta http-equiv="refresh" content="60">
+    <script>
+        function checkProgress() {
+            fetch('/scrape-progress/{{ task_id }}')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.status === 'done') {
+                        window.location.href = '/scrape-results/' + data.task_id;
+                    } else {
+                        document.getElementById('progress-status').innerText = data.message;
+                        setTimeout(checkProgress, 2000);
+                    }
+                });
+        }
+
+        window.onload = checkProgress;
+    </script>
+</head>
+<body>
+    <h1>🔍 Scraping in progress...</h1>
+    <p id="progress-status">Please wait, collecting data...</p>
+</body>
+</html>

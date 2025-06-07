@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Website Data Scraper</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 40px; background-color: #f4f4f4; color: #333; }
+        form { background-color: white; padding: 20px; border-radius: 6px; box-shadow: 0 0 10px rgba(0,0,0,0.1); width: 400px; }
+        label { font-weight: bold; }
+        input, select, button { width: 100%; margin-top: 8px; margin-bottom: 16px; }
+        a { text-decoration: none; color: #007BFF; }
+        a:hover { text-decoration: underline; }
+        #progress { background: #fff; border: 1px solid #ccc; padding: 10px; height: 100px; overflow-y: auto; margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>Website Data Scraper</h1>
+
+    <form id="scrapeForm">
+        <label>Website URL:</label>
+        <input type="url" name="website_url" required placeholder="https://example.com">
+
+        <label><input type="checkbox" name="follow_pagination"> Follow pagination (if available)</label><br><br>
+
+        <label>Select data to scrape:</label><br>
+        <label><input type="checkbox" name="data_type" value="phone"> Phone Number</label><br>
+        <label><input type="checkbox" name="data_type" value="dob"> DOB</label><br>
+        <label><input type="checkbox" name="data_type" value="email"> Email</label><br>
+        <label><input type="checkbox" name="data_type" value="name"> Name</label><br>
+        <label><input type="checkbox" name="data_type" value="address"> Address</label><br>
+        <label><input type="checkbox" name="data_type" value="purchase_id"> Purchase ID</label><br>
+        <label><input type="checkbox" name="data_type" value="username"> Username</label><br>
+        <label><input type="checkbox" name="data_type" value="transaction_id"> Transaction ID</label><br>
+        <label><input type="checkbox" name="data_type" value="payout"> Payout</label><br><br>
+
+        <hr>
+        <h3>Optional Login (if page is protected)</h3>
+
+        <label>Login Username:</label>
+        <input type="text" name="login_username" placeholder="your username (if needed)">
+
+        <label>Login Password:</label>
+        <input type="password" name="login_password" placeholder="your password (if needed)">
+
+        <label>Username Field Name (HTML name attribute):</label>
+        <input type="text" name="login_user_field" value="username" placeholder="default is 'username'">
+
+        <label>Password Field Name (HTML name attribute):</label>
+        <input type="text" name="login_pass_field" value="password" placeholder="default is 'password'">
+
+        <button type="submit">Scrape Website</button>
+    </form>
+
+    <div id="progress"></div>
+
+    <script>
+        const form = document.getElementById('scrapeForm');
+        const progressDiv = document.getElementById('progress');
+
+        form.addEventListener('submit', function(e) {
+            e.preventDefault();
+            progressDiv.innerHTML = "Starting scrape...";
+
+            const formData = new FormData(form);
+
+            fetch('/scrape-start', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                if(data.error){
+                    progressDiv.innerHTML = "<span style='color:red;'>" + data.error + "</span>";
+                    return;
+                }
+                const scrapeId = data.scrape_id;
+                pollProgress(scrapeId);
+            })
+            .catch(err => {
+                progressDiv.innerHTML = "<span style='color:red;'>Error: " + err + "</span>";
+            });
+        });
+
+        function pollProgress(scrapeId){
+            fetch(`/scrape-progress/${scrapeId}`)
+            .then(response => response.json())
+            .then(data => {
+                progressDiv.innerHTML = data.progress;
+                if (!data.progress.toLowerCase().includes('completed') && !data.progress.toLowerCase().includes('error')) {
+                    setTimeout(() => pollProgress(scrapeId), 2000);
+                }
+            })
+            .catch(() => {
+                progressDiv.innerHTML = "<span style='color:red;'>Failed to get progress update.</span>";
+            });
+        }
+    </script>
+</body>
+</html>

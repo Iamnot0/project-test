@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Scraping Results</title>
+    <style>
+        table {
+            width: 90%;
+            margin: 20px auto;
+            border-collapse: collapse;
+        }
+        td, th {
+            padding: 10px;
+            border: 1px solid #ccc;
+        }
+        body {
+            font-family: Arial;
+            margin: 40px;
+        }
+    </style>
+</head>
+<body>
+    <h1>✅ Scraping Complete</h1>
+    <p>Scraped from: <strong>{{ url }}</strong></p>
+
+    {% for data_type, items in results.items() %}
+        <h2>{{ data_type.title() }}</h2>
+        <table>
+            <thead>
+                <tr><th>#</th><th>Value</th></tr>
+            </thead>
+            <tbody>
+                {% for item in items %}
+                    <tr><td>{{ loop.index }}</td><td>{{ item }}</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% endfor %}
+
+    {% if csv_path %}
+        <p><a href="{{ csv_path }}" download>📥 Download CSV</a></p>
+    {% endif %}
+
+    <br><a href="/scrape-form">← Back</a>
+</body>
+</html>
