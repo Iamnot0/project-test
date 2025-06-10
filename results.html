@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Check Results</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f9f9f9;
+            color: #333;
+        }
+
+        h2 {
+            color: #444;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 80%;
+            margin-top: 20px;
+        }
+
+        th, td {
+            padding: 10px;
+            text-align: left;
+            border-bottom: 1px solid #ccc;
+        }
+
+        th {
+            background-color: #35355a;
+            color: white;
+        }
+
+        tr:hover {
+            background-color: #f1f1f1;
+        }
+
+        a {
+            color: #007BFF;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        .back-link {
+            margin-top: 30px;
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+    <h2>Telegram Username Results (Country: {{ country if country else 'N/A' }})</h2>
+
+    <table>
+        <tr>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Link</th>
+        </tr>
+        {% for result in results %}
+        <tr>
+            <td>{{ result.username }}</td>
+            <td style="color: {{ 'green' if result.valid else 'red' }}">
+                {{ "✅ Valid" if result.valid else "❌ Invalid" }}
+            </td>
+            <td>
+                {% if result.valid %}
+                    <a href="{{ result.url }}" target="_blank">View</a>
+                {% else %}
+                    N/A
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </table>
+
+    <a href="/" class="back-link">← Back to Home</a>
+</body>
+</html>

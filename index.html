@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Telegram Username Checker</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 40px;
+            background-color: #f2f2f2;
+            color: #333;
+        }
+        h1 {
+            color: #444;
+        }
+        .tld-box {
+            background-color: #35355a;
+            color: white;
+            padding: 10px;
+            margin-bottom: 20px;
+            border-radius: 5px;
+        }
+        form {
+            background-color: white;
+            padding: 20px;
+            border-radius: 6px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+            width: 400px;
+        }
+        label {
+            font-weight: bold;
+        }
+        select, input[type="file"], button {
+            margin-top: 8px;
+            margin-bottom: 16px;
+            width: 100%;
+        }
+        a {
+            margin-top: 20px;
+            display: inline-block;
+            text-decoration: none;
+            color: #007BFF;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <h1>Telegram Username Checker</h1>
+
+    <div class="tld-box">
+        <strong>Country TLDs:</strong><br>
+        US: .us | UK: .uk | Germany: .de | France: .fr | India: .in | Russia: .ru | Brazil: .br | Canada: .ca | Japan: .jp
+    </div>
+
+    {% if error %}
+        <p style="color:red;">{{ error }}</p>
+    {% endif %}
+
+    <form action="/telegram-check" method="POST" enctype="multipart/form-data">
+        <label>Upload username wordlist (one per line):</label><br>
+        <input type="file" name="userfile" required><br>
+
+        <label>Select Country (optional):</label>
+        <select name="country">
+            <option value="">-- Select --</option>
+            <option value=".us">United States (.us)</option>
+            <option value=".uk">United Kingdom (.uk)</option>
+            <option value=".de">Germany (.de)</option>
+            <option value=".fr">France (.fr)</option>
+            <option value=".in">India (.in)</option>
+            <option value=".ru">Russia (.ru)</option>
+            <option value=".br">Brazil (.br)</option>
+            <option value=".ca">Canada (.ca)</option>
+            <option value=".jp">Japan (.jp)</option>
+        </select><br>
+
+        <button type="submit">Run Telegram Check</button>
+    </form>
+
+    <a href="/scrape-form">→ Want to scrape phone numbers or DOBs from a website?</a>
+</body>
+</html>
